@@ -175,6 +175,22 @@
         Harvested from the microalgae <em>Haematococcus pluvialis</em>, Astaxanthin possesses a unique polar-nonpolar molecular structure. Its polar head groups anchor onto the external and internal surfaces of the cell membrane, while its long nonpolar polyene chain spans the lipid bilayer.
       </p>
 
+      
+      <!-- Mid-Article Direct CTA Banner (Optimized for Mobile) -->
+      <div class="my-8 p-4 sm:p-5 bg-rose-50 rounded-2xl border border-rose-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-left w-full sm:w-auto">
+          <div class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            Direct Lab Verified Formulation
+          </div>
+          <div class="text-xs text-slate-500 mt-0.5">Use 10% code <strong class="text-slate-800 font-mono">MICROCHOPSREVIEW</strong></div>
+        </div>
+        <a href="https://www.microingredients.com/products/astaxanthin-softgel?sca_ref=12196298.eg2BEhQl09nR&utm_source=uppromote&utm_medium=240654&utm_campaign=12196298" target="_blank" rel="noopener sponsored" class="w-full sm:w-auto text-center inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white text-xs font-bold px-5 py-3 rounded-xl shadow-md hover:shadow-rose-500/25 transition">
+          <span>View Lab Pricing</span>
+          <span>→</span>
+        </a>
+      </div>
+
       <!-- Clinical Trial Callout -->
       <div class="bg-slate-900 text-slate-100 p-6 rounded-2xl my-8">
         <div class="text-rose-400 text-xs font-bold uppercase tracking-wider mb-2">PubMed Clinical Spotlight</div>
@@ -315,7 +331,7 @@
     </div>
   </div>
 
-  <!-- Smart Offer & Redirect-On-Dismiss Script -->
+  <!-- Safe Modal & Action Script (Pure Opt-in, No Forced Navigation) -->
   <script>
     const AFFILIATE_TARGET_URL = "https://www.microingredients.com/products/astaxanthin-softgel?sca_ref=12196298.eg2BEhQl09nR&utm_source=uppromote&utm_medium=240654&utm_campaign=12196298";
     const COUPON_CODE = "MICROCHOPSREVIEW";
@@ -331,52 +347,69 @@
       modal.style.display = 'flex';
     }
 
-    function handleRedirect() {
+    function closePopup() {
+      modal.style.display = 'none';
+    }
+
+    function handleClaimOffer() {
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(COUPON_CODE).catch(() => {});
         }
       } catch (err) {}
-      window.location.href = AFFILIATE_TARGET_URL;
+      window.open(AFFILIATE_TARGET_URL, '_blank') || (window.location.href = AFFILIATE_TARGET_URL);
+      closePopup();
     }
 
-    // 1. Desktop Exit-Intent Trigger (When mouse leaves viewport toward close tab/address bar)
+    // Desktop Exit-Intent
     document.addEventListener('mouseleave', function(e) {
       if (e.clientY <= 10 && !popupShown) {
         showPopup();
       }
     });
 
-    // 2. Mobile Scroll Trigger (After user scrolls 50% down reading the review)
+    // Mobile Scroll Trigger (At 60% scroll depth)
     let scrollTriggered = false;
     window.addEventListener('scroll', function() {
       if (scrollTriggered || popupShown) return;
       const scrollPercent = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight;
-      if (scrollPercent > 0.5) {
+      if (scrollPercent > 0.6) {
         scrollTriggered = true;
         showPopup();
       }
     }, { passive: true });
 
-    // 3. Copy Button -> Copy Code & Redirect
+    // 1. Copy Button -> Copies code & Opens Store
     copyBtn.addEventListener('click', function(e) {
       e.stopPropagation();
-      handleRedirect();
+      handleClaimOffer();
     });
 
-    // 4. Close Button (✕) -> Redirect to affiliate target
+    // 2. Close Button (✕) -> JUST CLOSES MODAL (No redirect)
     closeBtn.addEventListener('click', function(e) {
       e.stopPropagation();
-      handleRedirect();
+      closePopup();
     });
 
-    // 5. Click outside modal box -> Redirect to affiliate target
+    // 3. Click Outside Modal -> JUST CLOSES MODAL (No redirect)
     modal.addEventListener('click', function(e) {
       if (e.target === modal) {
-        handleRedirect();
+        closePopup();
       }
     });
   </script>
+
+
+  <!-- Mobile Sticky Bottom CTA Bar -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 p-3 shadow-2xl flex items-center justify-between gap-3">
+    <div class="text-left min-w-0">
+      <div class="text-[11px] font-extrabold text-slate-900 truncate">10% Off Astaxanthin 12mg Softgels</div>
+      <div class="text-[10px] text-slate-500 font-mono">Code: MICROCHOPSREVIEW</div>
+    </div>
+    <a href="https://www.microingredients.com/products/astaxanthin-softgel?sca_ref=12196298.eg2BEhQl09nR&utm_source=uppromote&utm_medium=240654&utm_campaign=12196298" target="_blank" rel="noopener sponsored" class="flex-shrink-0 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md transition">
+      Claim Deal →
+    </a>
+  </div>
 
 </body>
 </html>
