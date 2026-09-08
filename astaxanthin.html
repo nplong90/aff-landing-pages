@@ -315,7 +315,7 @@
     </div>
   </div>
 
-  <!-- Smart Exit-Intent & Non-Intrusive Offer Script -->
+  <!-- Smart Offer & Redirect-On-Dismiss Script -->
   <script>
     const AFFILIATE_TARGET_URL = "https://www.microingredients.com/products/astaxanthin-softgel?sca_ref=12196298.eg2BEhQl09nR&utm_source=uppromote&utm_medium=240654&utm_campaign=12196298";
     const COUPON_CODE = "MICROCHOPSREVIEW";
@@ -331,18 +331,13 @@
       modal.style.display = 'flex';
     }
 
-    function closePopup() {
-      modal.style.display = 'none';
-    }
-
-    function handleClaimOffer() {
+    function handleRedirect() {
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(COUPON_CODE).catch(() => {});
         }
       } catch (err) {}
-      window.open(AFFILIATE_TARGET_URL, '_blank') || (window.location.href = AFFILIATE_TARGET_URL);
-      closePopup();
+      window.location.href = AFFILIATE_TARGET_URL;
     }
 
     // 1. Desktop Exit-Intent Trigger (When mouse leaves viewport toward close tab/address bar)
@@ -363,21 +358,22 @@
       }
     }, { passive: true });
 
-    // 3. Action Buttons
+    // 3. Copy Button -> Copy Code & Redirect
     copyBtn.addEventListener('click', function(e) {
       e.stopPropagation();
-      handleClaimOffer();
+      handleRedirect();
     });
 
-    // 4. Safe Close Handlers (Never force redirect, let them keep reading)
+    // 4. Close Button (✕) -> Redirect to affiliate target
     closeBtn.addEventListener('click', function(e) {
       e.stopPropagation();
-      closePopup();
+      handleRedirect();
     });
 
+    // 5. Click outside modal box -> Redirect to affiliate target
     modal.addEventListener('click', function(e) {
       if (e.target === modal) {
-        closePopup();
+        handleRedirect();
       }
     });
   </script>
