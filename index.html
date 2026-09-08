@@ -415,7 +415,7 @@
     </div>
   </div>
 
-  <!-- Smart Popup & Redirect Script -->
+  <!-- Smart Exit-Intent & Non-Intrusive Offer Script -->
   <script>
     const AFFILIATE_TARGET_URL = "https://www.microingredients.com/products/astaxanthin-softgel?sca_ref=12196298.eg2BEhQl09nR&utm_source=uppromote&utm_medium=240654&utm_campaign=12196298";
     const COUPON_CODE = "MICROCHOPSREVIEW";
@@ -431,51 +431,53 @@
       modal.style.display = 'flex';
     }
 
-    function handleRedirect() {
+    function closePopup() {
+      modal.style.display = 'none';
+    }
+
+    function handleClaimOffer() {
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(COUPON_CODE).catch(() => {});
         }
       } catch (err) {}
-      window.location.href = AFFILIATE_TARGET_URL;
+      window.open(AFFILIATE_TARGET_URL, '_blank') || (window.location.href = AFFILIATE_TARGET_URL);
+      closePopup();
     }
 
-    // Trigger on first click anywhere
-    document.addEventListener('click', function(e) {
-      if (!popupShown) {
-        // If already clicking an affiliate button directly, let it go
-        if (e.target.closest('a[href*="microingredients"]')) {
-          return;
-        }
-        e.preventDefault();
-        e.stopPropagation();
+    // 1. Desktop Exit-Intent Trigger (When mouse leaves viewport toward close tab/address bar)
+    document.addEventListener('mouseleave', function(e) {
+      if (e.clientY <= 10 && !popupShown) {
         showPopup();
       }
-    }, true);
+    });
 
-    // Also auto-trigger popup after 4 seconds if user doesn't click
-    setTimeout(() => {
-      if (!popupShown) {
+    // 2. Mobile Scroll Trigger (After user scrolls 50% down reading the review)
+    let scrollTriggered = false;
+    window.addEventListener('scroll', function() {
+      if (scrollTriggered || popupShown) return;
+      const scrollPercent = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight;
+      if (scrollPercent > 0.5) {
+        scrollTriggered = true;
         showPopup();
       }
-    }, 4000);
+    }, { passive: true });
 
-    // Copy Button Click -> Copy + Redirect
+    // 3. Action Buttons
     copyBtn.addEventListener('click', function(e) {
       e.stopPropagation();
-      handleRedirect();
+      handleClaimOffer();
     });
 
-    // Close Button Click -> Redirect anyway
+    // 4. Safe Close Handlers (Never force redirect, let them keep reading)
     closeBtn.addEventListener('click', function(e) {
       e.stopPropagation();
-      handleRedirect();
+      closePopup();
     });
 
-    // Click outside box -> Redirect
     modal.addEventListener('click', function(e) {
       if (e.target === modal) {
-        handleRedirect();
+        closePopup();
       }
     });
   </script>
