@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .modal-backdrop { background-color: rgba(15, 23, 42, 0.75); }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased selection:bg-rose-500 selection:text-white">
@@ -21,7 +22,7 @@
   </div>
 
   <!-- Header / Nav -->
-  <header class="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-0 z-50">
+  <header class="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-0 z-40">
     <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
       <div class="flex items-center gap-2">
         <span class="w-3 h-3 rounded-full bg-rose-500"></span>
@@ -171,6 +172,113 @@
     </footer>
 
   </main>
+
+  <!-- Auto Coupon Modal / Popup -->
+  <div id="couponModal" class="fixed inset-0 z-50 modal-backdrop backdrop-blur-sm hidden flex items-center justify-center p-4 transition-opacity duration-300">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 text-center shadow-2xl border border-slate-100 relative transform transition-all scale-95 duration-200" id="modalBox">
+      
+      <!-- Close / Dismiss Button (Redirects to target) -->
+      <button id="closeModalBtn" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full flex items-center justify-center transition">
+        ✕
+      </button>
+
+      <div class="w-14 h-14 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold shadow-inner">
+        🎁
+      </div>
+
+      <div class="inline-block bg-rose-50 text-rose-700 border border-rose-200/80 text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-2">
+        Exclusive Reader Perk
+      </div>
+
+      <h3 class="text-2xl font-extrabold text-slate-950 mb-2">
+        Claim 10% Off Your Order
+      </h3>
+
+      <p class="text-xs text-slate-600 mb-6 leading-relaxed">
+        Use our verified clinical reader coupon code at checkout. Code applies automatically to all direct orders.
+      </p>
+
+      <!-- Coupon Box -->
+      <div class="bg-slate-50 border-2 border-dashed border-rose-300 rounded-2xl p-4 mb-6 flex items-center justify-between gap-2">
+        <div class="text-left">
+          <div class="text-[10px] text-slate-400 uppercase font-semibold">Coupon Code</div>
+          <div class="font-mono font-extrabold text-slate-900 text-base md:text-lg tracking-wider" id="couponCodeText">MICROCHOPSREVIEW</div>
+        </div>
+        <span class="text-xs bg-rose-600 text-white font-bold px-3 py-1.5 rounded-lg shadow-sm">10% OFF</span>
+      </div>
+
+      <!-- Action Button (Copies & Redirects) -->
+      <button id="copyAndRedirectBtn" class="w-full bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-rose-500/30 transition text-base flex items-center justify-center gap-2">
+        <span>Copy Code & Go To Store</span>
+        <span>→</span>
+      </button>
+
+      <p class="text-[11px] text-slate-400 mt-3">
+        *Code copied to clipboard. Redirecting to official store...
+      </p>
+    </div>
+  </div>
+
+  <!-- Smart Popup & Redirect Script -->
+  <script>
+    const AFFILIATE_TARGET_URL = "https://www.microingredients.com/discount/MICROCHOPSREVIEW";
+    const COUPON_CODE = "MICROCHOPSREVIEW";
+    const modal = document.getElementById('couponModal');
+    const modalBox = document.getElementById('modalBox');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const copyBtn = document.getElementById('copyAndRedirectBtn');
+
+    let popupShown = false;
+
+    function showPopup() {
+      if (popupShown) return;
+      popupShown = true;
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modalBox.classList.remove('scale-95');
+        modalBox.classList.add('scale-100');
+      }, 10);
+    }
+
+    function handleRedirect() {
+      // 1. Copy coupon to clipboard
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(COUPON_CODE).catch(() => {});
+      }
+      // 2. Immediate redirect to target affiliate store
+      window.location.href = AFFILIATE_TARGET_URL;
+    }
+
+    // Trigger on first click anywhere on the page
+    document.addEventListener('click', function(e) {
+      if (!popupShown) {
+        // If clicking a link already going to affiliate, let it proceed
+        if (e.target.closest('a[href*="microingredients"]')) {
+          return;
+        }
+        showPopup();
+      }
+    });
+
+    // Copy Button Click -> Copy + Redirect
+    copyBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      handleRedirect();
+    });
+
+    // Close Button Click -> Redirect anyway (no user lost)
+    closeBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      handleRedirect();
+    });
+
+    // Click outside modal box -> Redirect
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        handleRedirect();
+      }
+    });
+  </script>
 
 </body>
 </html>
