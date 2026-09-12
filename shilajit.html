@@ -681,7 +681,7 @@
     </div>
   </div>
 
-  <!-- Script -->
+    <!-- Safe Modal & Action Script (Pure Opt-in, No Forced Navigation) -->
   <script>
     const AFFILIATE_TARGET_URL = "https://www.microingredients.com/products/micro-ingredients-shilajit-11-in-1-3000mg-240-capsules?sca_ref=12196298.eg2BEhQl09nR&utm_source=uppromote&utm_medium=240654&utm_campaign=12196298";
     const COUPON_CODE = "MICROCHOPSREVIEW";
@@ -697,42 +697,55 @@
       modal.style.display = 'flex';
     }
 
-    function handleRedirect() {
+    function closePopup() {
+      modal.style.display = 'none';
+    }
+
+    function handleClaimOffer() {
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(COUPON_CODE).catch(() => {});
         }
       } catch (err) {}
-      window.location.href = AFFILIATE_TARGET_URL;
+      window.open(AFFILIATE_TARGET_URL, '_blank') || (window.location.href = AFFILIATE_TARGET_URL);
+      closePopup();
     }
 
-    // Trigger on first click
-    document.addEventListener('click', function(e) {
-      if (!popupShown) {
-        if (e.target.closest('a[href*="microingredients"]')) return;
-        e.preventDefault();
-        e.stopPropagation();
+    // Desktop Exit-Intent
+    document.addEventListener('mouseleave', function(e) {
+      if (e.clientY <= 10 && !popupShown) {
         showPopup();
       }
-    }, true);
+    });
 
-    // Auto-trigger after 4s
-    setTimeout(() => {
-      if (!popupShown) showPopup();
-    }, 4000);
+    // Mobile Scroll Trigger (At 60% scroll depth)
+    let scrollTriggered = false;
+    window.addEventListener('scroll', function() {
+      if (scrollTriggered || popupShown) return;
+      const scrollPercent = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight;
+      if (scrollPercent > 0.6) {
+        scrollTriggered = true;
+        showPopup();
+      }
+    }, { passive: true });
 
+    // 1. Copy Button -> Copies code & Opens Store
     copyBtn.addEventListener('click', function(e) {
       e.stopPropagation();
-      handleRedirect();
+      handleClaimOffer();
     });
 
+    // 2. Close Button (✕) -> JUST CLOSES MODAL (No redirect)
     closeBtn.addEventListener('click', function(e) {
       e.stopPropagation();
-      handleRedirect();
+      closePopup();
     });
 
+    // 3. Click Outside Modal -> JUST CLOSES MODAL (No redirect)
     modal.addEventListener('click', function(e) {
-      if (e.target === modal) handleRedirect();
+      if (e.target === modal) {
+        closePopup();
+      }
     });
   </script>
 
